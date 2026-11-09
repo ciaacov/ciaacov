@@ -1,4 +1,4 @@
-# My TV: Xiaomi MiTV-MOOR2 (Google TV / Android 11) at 192.168.1.51
+# My TV: Xiaomi MiTV-MOOR2 (Google TV / Android 11) at 192.168.1.151
 
 **Guia em português, passo a passo: [GUIA.md](GUIA.md)**
 

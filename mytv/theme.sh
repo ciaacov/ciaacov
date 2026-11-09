@@ -4,8 +4,9 @@
 #   mytv/theme.sh cinematic    any folder name under themes/
 #   mytv/theme.sh --reset      back to plain black
 set -euo pipefail
-NAME="${1:-aurora}"
-source "$(dirname "$0")/_env.sh"
+IP=""; NAME=aurora
+for a in "$@"; do case "$a" in [0-9]*.*) IP="$a" ;; *) NAME="$a" ;; esac; done
+source "$(dirname "$0")/_env.sh" "$IP"
 if [ "$NAME" = --reset ]; then
   bash tools/theme.sh --reset
 else

@@ -1,6 +1,8 @@
 # Shared setup for the mytv/ scripts: TV address, Python venv (Mac, Linux and Windows Git Bash).
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
-export TV_HOST="${TV_HOST:-192.168.1.51}"
+case "${1:-}" in [0-9]*.*) TV_HOST="$1" ;; esac
+export TV_HOST="${TV_HOST:-192.168.1.151}"
+echo "TV: $TV_HOST"
 mkdir -p mytv/shots
 vpy() { if [ -x tools/venv/bin/python ]; then echo tools/venv/bin/python; else echo tools/venv/Scripts/python.exe; fi; }
 if [ ! -x "$(vpy)" ]; then

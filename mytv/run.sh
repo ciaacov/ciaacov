@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # One command for the whole job on your MiTV-MOOR2: backup, debloat, install the launcher,
 # with a TV screenshot after each step. Run from the repo root on a computer on your home network:
-#   mytv/run.sh            (TV at 192.168.1.51)
+#   mytv/run.sh            (TV at 192.168.1.151)
 #   TV_HOST=192.168.1.77 mytv/run.sh
 set -euo pipefail
 STOCK=com.google.android.apps.tv.launcherx
@@ -11,7 +11,7 @@ step() { printf '\n=== %s ===\n' "$1"; }
 pause() { read -r -p "Olhe a TV (e a foto $1) e aperte Enter para continuar (Ctrl+C para parar)... " _; }
 
 step "1/6 Preparando as ferramentas (so na primeira vez demora um pouco)"
-source "$(dirname "$0")/_env.sh"
+source "$(dirname "$0")/_env.sh" "${1:-}"
 
 step "2/6 Conectando na TV $TV_HOST: na TV aparece 'Permitir depuracao USB?' -> marque 'Sempre permitir' e aperte OK"
 tv --probe

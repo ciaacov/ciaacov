@@ -1,7 +1,7 @@
 # PRD: CleanYourTV for Xiaomi MiTV-MOOR2
 
 ## Original problem
-Debloat the user's Android TV (Xiaomi MiTV-MOOR2, Google TV / Android 11, IP 192.168.1.51, network cable into the TV's own port, nothing on USB)
+Debloat the user's Android TV (Xiaomi MiTV-MOOR2, Google TV / Android 11, IP 192.168.1.151, network cable into the TV's own port, nothing on USB)
 and replace its launcher with an Apple TV-style home screen. Back up first, verify each step with TV screenshots,
 and deliver restore and build scripts plus a README. Never uninstall system packages.
 
@@ -22,3 +22,4 @@ and deliver restore and build scripts plus a README. Never uninstall system pack
 - P1: Confirm the file manager package name and add it to dock_apps if it's missing
 - P2: Optional themes (tools/theme.sh), second debloat round
 - Added (PT-BR request): mytv/GUIA.md beginner guide (Windows Git Bash / Mac / Linux, getting the folder via Save to GitHub > Download ZIP, run order, sending back mytv/shots). Shared mytv/_env.sh picks py/python3/python and venv bin or Scripts (Windows). Scripts invoked with `bash` so missing exec bits from ZIP don't matter; prompts translated to Portuguese. Verified: fresh venv creation + run from another folder reaches the TV probe.
+- Fixed TV IP: 192.168.1.151 (was a .51 typo). Scripts also accept the IP as an argument (bash mytv/run.sh <ip>); TV_HOST env still works.

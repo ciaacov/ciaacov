@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Second cleanup round: disables mytv/debloat-round2.txt, with a screenshot before and after.
 set -euo pipefail
-source "$(dirname "$0")/_env.sh"
+source "$(dirname "$0")/_env.sh" "${1:-}"
 tv --probe
 tv --screenshot mytv/shots/5-antes-limpeza2.png HOME --wait 2
 bash tools/disable.sh mytv/debloat-round2.txt
