@@ -1,0 +1,36 @@
+{
+  "summary": "Simulated end-to-end runs of mytv/run.sh with a fake TV (no real device). Each scenario used its own copy of /app in /tmp/tvsim-<name>, with tools/tv.py, recovery.py and b64push.py swapped for fakes that keep a JSON state. In the fake, setupwraith's RecoveryActivity claims HOME at priority 1, ahead of the installed launcher, and Android drops the Home preference when the set of HOME apps changes. The simulator first reproduced the user's failure with the OLD run.sh (76fcbd65): 'Home resolves to com.google.android.tungsten.setupwraith/.RecoveryActivity', then rollback to launcherx. With the NEW run.sh every scenario behaved as expected. A ETHERNET: FORCE_SETUPWRAITH=1 reaches disable.sh (its 'note: FORCE_SETUPWRAITH=1 is set' line prints), setupwraith is disabled, the install goes through, Home ends at com.gathin.tvhome/.MainActivity, RC=0. B WIFI with no cname=: FORCE is not set, disable.sh skips setupwraith, run.sh prints PAREI AQUI and exits 1. build-and-install never ran (no b64push or pm install in the TV log). B2 WIFI, network owned by android.uid.system: setupwraith is disabled, RC=0, Home is tvhome. B3 WIFI, network owned by setupwraith: PAREI AQUI, exit 1, no disable-user for setupwraith sent. C: the OLD run.sh failed first (record written, launcherx rolled back, tvhome installed, setupwraith on), then the NEW run.sh was re-run on the same state: the first recovery record was kept, RC=0, Home is tvhome. A third run on top also ended with RC=0. bash -n passes for all mytv/*.sh. _env.sh defaults TV_HOST to 192.168.1.151, takes an IP argument and respects an existing TV_HOST; theme.sh, round2.sh and restore.sh pass the optional IP to it. The 2 repo pytest files that mention mytv: 75 passed.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "mytv/run.sh step 4 Ethernet detection (line 34)", "issue": "It greps the WHOLE 'dumpsys connectivity' output for 'Transports: ETHERNET'. If that string appears outside the active network (for example a NetworkRequest or a request log entry from a vendor service asking for TRANSPORT_ETHERNET) on a TV that is only on Wi-Fi, FORCE_SETUPWRAITH=1 is set. Disabling setupwraith can then delete its Wi-Fi network and take the TV offline. It is not proven to happen on Android 11, but it would fail open on the one safety check. Hardening: look only at the default or connected network (the NetworkAgentInfo lines or the 'Active default network' block), or check eth0 carrier (cat /sys/class/net/eth*/carrier, or ip route get 1.1.1.1 shows dev eth0)."},
+      {"endpoint": "mytv/run.sh post-check (line 39)", "issue": "Fails open: if 'tv pm list packages -e setupwraith' fails because the connection dropped, grep matches nothing, so the condition is false and run.sh goes on to launcher install. Suggest failing closed: capture the output, exit if tv fails, or require setupwraith to be in 'pm list packages -d'."},
+      {"endpoint": "mytv/run.sh PAREI AQUI message", "issue": "On Wi-Fi with firmware that prints no cname= in dumpsys wifi (the user's TV, as the request says), forgetting and rejoining the Wi-Fi network does not change the disable.sh skip ('could not check'). Following the message then loops forever. The message also always says 'not on the network cable', which can be wrong if pm disable-user simply did not take. Only Wi-Fi users hit this; the user's cable setup does not."}
+    ]
+  },
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "test_report_links": [
+    "/app/test_reports/sim/run_scenario.sh",
+    "/app/test_reports/sim/fake_tv.py",
+    "/app/test_reports/sim/fake_recovery.py",
+    "/app/test_reports/sim/fake_b64push.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "Optional hardening: limit the Ethernet check to the active default network, or check eth0 carrier, so a Wi-Fi-only TV can never get FORCE_SETUPWRAITH=1.",
+    "Optional: make the line-39 post-check fail closed when tv.py fails.",
+    "Optional: adjust the PAREI AQUI text for firmware with no cname= (suggest plugging in the network cable and running again)."
+  ],
+  "critical_code_review_comments": [
+    "The fix is correct for the user's case (Ethernet): FORCE_SETUPWRAITH is exported before disable.sh and appears in its override note. It stays inside the bash process, so it does not leak into the user's shell.",
+    "Under set -euo pipefail the step-4 pipelines sit in if-conditions, so a tv failure there does not abort; this is safe for the Ethernet check (no FORCE) but fails open for the post-check.",
+    "FORCE_SETUPWRAITH stays exported for build-and-install.sh; that is harmless because build-and-install does not read it."
+  ],
+  "updated_files": ["None of the app files changed. Added simulation harness files in /app/test_reports/sim/"],
+  "success_rate": {"backend": "100% (6/6 simulated scenarios + syntax/arg checks)", "frontend": "N/A"},
+  "seed_data_creation": "None. The simulation state lives only in /tmp/tvsim-*.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Usage: bash /app/test_reports/sim/run_scenario.sh <name> <ETHERNET|WIFI> [keep]. It copies /app to /tmp/tvsim-<name>, swaps in the fake tv/recovery/b64push and pipes yes '' into run.sh. Pass 'keep' to re-run on the existing state. Optional env: TVSIM_WIFI_CNAME=<owner> adds a cname= line to dumpsys wifi. Output goes to /tmp/tvsim-<name>/out-*.txt and the command log to tv.log. No real TV was tested.",
+  "rca of the issue": "On the MiTV the dumpsys wifi output has no cname=, so disable.sh skipped setupwraith (it fails safe without FORCE_SETUPWRAITH). setupwraith's RecoveryActivity then out-ranked com.gathin.tvhome for HOME after launcherx was disabled, so build-and-install's Home check failed and it rolled back. Fix: run.sh detects Ethernet and exports FORCE_SETUPWRAITH=1, and stops with PAREI AQUI before the install if setupwraith is still enabled. The simulator reproduced the old failure and confirmed the fix."
+}

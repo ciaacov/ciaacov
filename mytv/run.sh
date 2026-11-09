@@ -30,18 +30,24 @@ pause "$SHOTS/1-before.png"
 
 step "4/6 Limpeza (so desativa, nada e apagado)"
 SETUP=com.google.android.tungsten.setupwraith
-# The TV is on a network cable, so turning off the setup wizard cannot take it offline (FORCE_SETUPWRAITH).
-if tv 'dumpsys connectivity' | grep -o 'Transports: [A-Z]*' | grep ETHERNET >/dev/null; then
+# Only on a live network cable can turning off the setup wizard not take the TV offline (FORCE_SETUPWRAITH):
+# eth0 must have carrier AND the TV's internet route must go out through it.
+ETH_CARRIER=$(tv 'cat /sys/class/net/eth*/carrier 2>/dev/null' | tr -dc '0-9' || true)
+ETH_ROUTE=$(tv 'ip route get 1.1.1.1 2>/dev/null; ip -4 route show table all 2>/dev/null | grep "^default"' | grep -c 'dev eth' || true)
+if [ "${ETH_CARRIER#*1}" != "$ETH_CARRIER" ] && [ "${ETH_ROUTE:-0}" -gt 0 ]; then
   echo "TV no cabo de rede: o assistente de configuracao ($SETUP) pode ser desligado com seguranca."
   export FORCE_SETUPWRAITH=1
 fi
 bash tools/disable.sh mytv/debloat.txt
-if tv "pm list packages -e $SETUP" | tr -d '\r' | grep -x "package:$SETUP" >/dev/null; then
+# Fail closed: a TV that does not answer stops the run here (set -e) instead of going on to the install.
+ALL=$(tv "pm list packages $SETUP" | tr -d '\r')
+OFF=$(tv "pm list packages -d $SETUP" | tr -d '\r')
+if printf '%s\n' "$ALL" | grep -x "package:$SETUP" >/dev/null && ! printf '%s\n' "$OFF" | grep -x "package:$SETUP" >/dev/null; then
   echo >&2
   echo "PAREI AQUI: o assistente de configuracao do Google ($SETUP) continua ligado," >&2
-  echo "e com ele ligado a nova tela inicial nao consegue ficar como Home." >&2
-  echo "A TV nao esta usando o cabo de rede agora. Na TV: Configuracoes > Rede e Internet > sua rede Wi-Fi >" >&2
-  echo "Esquecer rede, depois conecte nela de novo. Entao rode este mesmo comando outra vez." >&2
+  echo "e com ele ligado a nova tela inicial nao consegue ficar como Home. Nada foi estragado." >&2
+  echo "Para resolver: ligue o CABO DE REDE na TV (e confira em Configuracoes > Rede que ela esta usando o cabo)," >&2
+  echo "depois rode este mesmo comando outra vez." >&2
   exit 1
 fi
 tv --screenshot "$SHOTS/2-after-debloat.png" --wait 1
