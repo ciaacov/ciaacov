@@ -1,0 +1,3 @@
+Wi-Fi is disabled
+Verbose logging is off
+mNetworkInfo [type: WIFI[], state: DISCONNECTED/DISCONNECTED, reason: (unspecified)]

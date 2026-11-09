@@ -1,0 +1,4 @@
+Active default network: 101
+  NetworkAgentInfo{ ni{[type: WIFI[], state: CONNECTED/CONNECTED, reason: (unspecified)]}  network{101}  nc{[ Transports: WIFI Capabilities: INTERNET&VALIDATED]} }
+  NetworkRequest [ REQUEST id=5, [ Transports: ETHERNET Capabilities: INTERNET Uid: 1000] ]
+  REGISTER NetworkRequest [ TRACK_DEFAULT id=8, [ Transports: ETHERNET Capabilities: INTERNET] ] NetworkAgentInfo CONNECTED/CONNECTED

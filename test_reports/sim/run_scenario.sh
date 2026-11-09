@@ -11,11 +11,12 @@ if [ -z "$KEEP" ]; then
   cp /app/test_reports/sim/fake_recovery.py "$SIM/tools/recovery.py"
   cp /app/test_reports/sim/fake_b64push.py "$SIM/tools/b64push.py"
   : > "$SIM/tv.log"
+  [ -n "${OLD_RUNSH:-}" ] && git -C /app show "$OLD_RUNSH:mytv/run.sh" > "$SIM/mytv/run.sh"
 fi
 export TVSIM_DIR=$SIM TVSIM_STATE=$SIM/state.json TVSIM_LOG=$SIM/tv.log TVSIM_LIST=$SIM/mytv/debloat.txt
 export TVSIM_TRANSPORT=$TRANSPORT
 export HOME=$SIM/home; mkdir -p "$HOME"
-unset FORCE_SETUPWRAITH FORCE_HOME TVINPUT_ALLOW HANDLERS_ALLOW
+[ -n "${KEEP_FORCE:-}" ] || unset FORCE_SETUPWRAITH; unset FORCE_HOME TVINPUT_ALLOW HANDLERS_ALLOW
 cd "$SIM"
 yes '' | bash mytv/run.sh > "$SIM/out-$TRANSPORT${KEEP:+-rerun}.txt" 2>&1
 RC=${PIPESTATUS[1]}

@@ -1,0 +1,9 @@
+NetworkFactories for: Ethernet WifiNetworkFactory
+Active default network: 101
+Current Networks:
+  NetworkAgentInfo{ ni{[type: Ethernet[], state: DISCONNECTED/DISCONNECTED, reason: (unspecified), extra: , failover: false, available: false, roaming: false]}  network{100}  nc{[ Transports: ETHERNET Capabilities: NOT_METERED&INTERNET&NOT_RESTRICTED&TRUSTED]} }
+  NetworkAgentInfo{ ni{[type: WIFI[], state: CONNECTED/CONNECTED, reason: (unspecified), extra: , failover: false, available: true, roaming: false]}  network{101}  nc{[ Transports: WIFI Capabilities: NOT_METERED&INTERNET&NOT_RESTRICTED&TRUSTED&VALIDATED]} }
+Network Requests:
+  NetworkRequest [ REQUEST id=5, [ Transports: ETHERNET Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED Uid: 1000] ]
+mNetworkRequestInfoLogs (most recent first):
+  REGISTER NetworkRequest [ TRACK_DEFAULT id=8, [ Transports: ETHERNET Capabilities: INTERNET Uid: 10045] ] CONNECTED/CONNECTED

@@ -1,0 +1,3 @@
+Active default network: 100
+Current Networks:
+  NetworkAgentInfo{ ni{[type: Ethernet[], state: CONNECTED/CONNECTED, reason: (unspecified), extra: , failover: false, available: true, roaming: false]}  network{100}  nc{[ Transports: ETHERNET Capabilities: NOT_METERED&INTERNET&NOT_RESTRICTED&TRUSTED&VALIDATED LinkUpBandwidth>=100000Kbps]} }

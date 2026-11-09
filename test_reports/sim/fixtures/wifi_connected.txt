@@ -1,0 +1,3 @@
+Wi-Fi is enabled
+mNetworkInfo [type: WIFI[], state: CONNECTED/CONNECTED, reason: (unspecified), extra: "home"]
+  ID: 0 SSID: "home" cname=com.google.android.tungsten.setupwraith 

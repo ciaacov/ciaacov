@@ -33,11 +33,12 @@ SETUP=com.google.android.tungsten.setupwraith
 # Turning off the setup wizard can only drop a Wi-Fi network, so allow it (FORCE_SETUPWRAITH) when the TV's
 # connection is a cable: some sign of a live Ethernet link, and no connected Wi-Fi network at all.
 on_cable() {
-  local conn wifi eth=0 wlan=0
-  conn=$(tv 'dumpsys connectivity' | tr -d '\r' | grep 'NetworkAgentInfo' | grep 'CONNECTED/CONNECTED' || true)
-  printf '%s\n' "$conn" | grep 'Transports: ETHERNET' >/dev/null && eth=1
+  local all conn wifi eth=0 wlan=0
+  all=$(tv 'dumpsys connectivity' | tr -d '\r') || { echo "Conexao da TV: nao consegui ler"; return 1; }
+  conn=$(printf '%s\n' "$all" | grep 'NetworkAgentInfo' | grep 'CONNECTED/CONNECTED' || true)
+  printf '%s\n' "$conn" | grep -E '^ *NetworkAgentInfo\{.*state: *CONNECTED/CONNECTED.*Transports: ETHERNET' >/dev/null && eth=1
   printf '%s\n' "$conn" | grep 'Transports: WIFI' >/dev/null && wlan=1
-  tv 'dumpsys ethernet' 2>/dev/null | tr -d '\r' | grep -Ei 'state: *CONNECTED|link.*up|isConnected.*true' >/dev/null && eth=1
+  tv 'dumpsys ethernet' 2>/dev/null | tr -d '\r' | grep -Ei 'state: *CONNECTED|iface: *eth[0-9]+, *up: *true' >/dev/null && eth=1
   tv 'cat /sys/class/net/eth*/carrier 2>/dev/null' 2>/dev/null | grep -x '1' >/dev/null && eth=1
   wifi=$(tv 'dumpsys wifi' 2>/dev/null | tr -d '\r' || true)
   printf '%s\n' "$wifi" | grep -Ei 'mNetworkInfo.*state: CONNECTED|Wi-Fi is connected' >/dev/null && wlan=1

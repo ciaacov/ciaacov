@@ -1,0 +1,2 @@
+Wi-Fi is enabled
+  ID: 0 SSID: "home" cname=com.google.android.tungsten.setupwraith 

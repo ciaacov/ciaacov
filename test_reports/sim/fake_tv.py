@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Fake tools/tv.py for simulating a Xiaomi MiTV-MOOR2 (Google TV 11). State in $TVSIM_STATE (JSON).
-Env: TVSIM_TRANSPORT=ETHERNET|WIFI, TVSIM_LOG=path (every command logged), TVSIM_WIFI_CNAME=pkg (optional)."""
+Env: TVSIM_TRANSPORT=ETHERNET|WIFI, TVSIM_LOG=path (every command logged), TVSIM_WIFI_CNAME=pkg (optional),
+TVSIM_NO_SYSFS=1, TVSIM_CONN_FILE/TVSIM_WIFI_FILE/TVSIM_ETH_FILE=path (raw dumpsys output), TVSIM_FAIL_RE=regex (tv.py exits 1)."""
 import json, os, re, sys
 
 STATE = os.environ["TVSIM_STATE"]
@@ -118,6 +119,10 @@ def run(s, c):
     if c.startswith("ip route get 1.1.1.1"):
         dev = "eth0" if os.environ.get("TVSIM_TRANSPORT", "ETHERNET") == "ETHERNET" else "wlan0"
         return f"1.1.1.1 via 192.168.1.1 dev {dev} table {dev} src 192.168.1.151 uid 2000\n"
+    for knob, cmd in (("TVSIM_CONN_FILE", "dumpsys connectivity"), ("TVSIM_WIFI_FILE", "dumpsys wifi"),
+                      ("TVSIM_ETH_FILE", "dumpsys ethernet")):
+        if c == cmd and os.environ.get(knob):
+            return open(os.environ[knob]).read()
     if c == "dumpsys connectivity":
         t = os.environ.get("TVSIM_TRANSPORT", "ETHERNET")
         return ("NetworkAgentInfo{ ni{[type: %s[], state: CONNECTED/CONNECTED]}  network{100}  nc{[ Transports: %s "
@@ -153,6 +158,9 @@ def run(s, c):
 
 def main():
     a = sys.argv[1:]
+    fail = os.environ.get("TVSIM_FAIL_RE")  # commands matching this regex fail like a dropped connection
+    if fail and a and re.search(fail, " ".join(a)):
+        log("FAIL " + " ".join(a)); sys.stderr.write("error: lost connection to the TV\n"); sys.exit(1)
     s = load()
     if a and a[0] == "--probe":
         log("--probe"); print("connected to MiTV-MOOR2 (Android 11, SDK 30)")

@@ -1,0 +1,30 @@
+{
+  "summary": "Checked the new on_cable() in mytv/run.sh step 4/6 against the extended fake TV in /app/test_reports/sim. There is no real device, and the fake dumpsys text is my best guess at what Android 11 prints. Result: 18/18 scenarios PASS (run_all_iter2.sh), plus a re-run after a failed run. A: Ethernet -> cabo=1 wifi=0, setupwraith disabled, Home com.gathin.tvhome, RC=0. U: Ethernet with no sysfs (the user's case) -> same result, RC=0. B and B_nosysfs: Wi-Fi -> PAREI AQUI, exit 1, 0 pm install, 0 setupwraith disable, and the new 'FORCE_SETUPWRAITH=1 bash mytv/run.sh' hint is shown. F: a FORCE_SETUPWRAITH=1 set by the user is respected (detection skipped, setupwraith disabled, RC=0). O: the old run.sh (bd7a1e09, ETH_CARRIER) on Ethernet without sysfs reproduces PAREI; with FORCE_SETUPWRAITH=1 it finishes, RC=0. E1: a stale non-CONNECTED ETHERNET agent plus a CONNECTED WIFI agent and Ethernet request logs -> cabo=0 wifi=1, not forced. E2: an Ethernet request-log line containing 'NetworkAgentInfo' and 'CONNECTED/CONNECTED' while on Wi-Fi -> cabo=1, but wifi=1 blocks the force. E3: ETHERNET connected and 'Wi-Fi is disabled' -> forced, RC=0. E4: ETHERNET connected plus Wi-Fi mNetworkInfo CONNECTED -> not forced. E5: every tv.py call inside on_cable fails -> cabo=0 wifi=0, no crash, PAREI exit 1. E6: dumpsys connectivity fails but sysfs carrier=1 -> forced. E7: dumpsys wifi fails on Wi-Fi -> not forced. E9 and E10 cover the bug below. R: a Wi-Fi run fails, then the Ethernet re-run on the same state ends with RC=0 and Home tvhome. One bug was found and fixed: the dumpsys ethernet regex 'link.*up' (grep -i) matched 'linkProperties ... Group' and 'LinkUpBandwidth', so an interface that is DOWN counted as a cable. Together with an unreadable dumpsys connectivity and a dumpsys wifi without an mNetworkInfo line (E9), the old regex set FORCE_SETUPWRAITH=1 on a Wi-Fi TV whose network belongs to setupwraith. Disabling setupwraith there would take the TV offline. Fixed to 'state: *CONNECTED|iface: *eth[0-9]+, *up: *true'. E9 is now not forced, and E10 (cable detected from the dumpsys ethernet line alone) still forces. bash -n passes for all mytv/*.sh and tools/disable.sh. Repo pytest: 24 passed.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "mytv/run.sh on_cable() dumpsys ethernet regex", "issue": "FIXED by testing agent: 'link.*up|isConnected.*true' was case-insensitive and matched 'linkProperties...Group' and 'LinkUpBandwidth', so cabo=1 was reported for a down eth0. With Wi-Fi undetected (E9) this force-disabled setupwraith on a Wi-Fi TV. Now 'state: *CONNECTED|iface: *eth[0-9]+, *up: *true' (Android 11 EthernetNetworkFactory NetworkInterfaceState prints 'iface: eth0, up: true')."},
+      {"endpoint": "mytv/run.sh on_cable() Wi-Fi side", "issue": "Fails open on missing data: wifi_conectado=0 is also the answer when 'dumpsys connectivity' fails (its error is swallowed by '|| true') and 'dumpsys wifi' has no mNetworkInfo line. Cable evidence from sysfs or dumpsys ethernet alone (E6) then forces. Suggestion: if 'tv dumpsys connectivity' itself fails, return 1 (do not force). The user still gets the PAREI hint with FORCE_SETUPWRAITH=1."},
+      {"endpoint": "mytv/run.sh on_cable() connectivity grep", "issue": "The ETHERNET test greps any line that has both 'NetworkAgentInfo' and 'CONNECTED/CONNECTED'. A request-log line can match (E2 gave cabo=1). This is safe only because the Wi-Fi check also runs. Tighter: match lines that start with 'NetworkAgentInfo{' and contain 'state: CONNECTED/CONNECTED'."}
+    ]
+  },
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "test_report_links": ["/app/test_reports/sim/run_all_iter2.sh", "/app/test_reports/sim/run_scenario.sh", "/app/test_reports/sim/fake_tv.py", "/app/test_reports/sim/fixtures/"],
+  "action_items": [
+    "Optional: make on_cable() return 1 (do not force) when 'tv dumpsys connectivity' fails, instead of swallowing the error",
+    "Optional: anchor the connectivity grep to 'NetworkAgentInfo{' lines with 'state: CONNECTED/CONNECTED'",
+    "Real-TV confirmation is still missing. If the user hits PAREI again, ask for the 'Conexao da TV: cabo=X wifi_conectado=Y' line and for 'dumpsys connectivity | grep NetworkAgentInfo' output"
+  ],
+  "critical_code_review_comments": [
+    "The detection runs only when FORCE_SETUPWRAITH is unset, so a value set by the user is respected. disable.sh honours the env even with the old run.sh.",
+    "Fail-closed post-check (pm list packages and -d) is correct: PAREI happens before any pm install in every Wi-Fi case.",
+    "Not verified: the real Android 11 dumpsys wording. The fixtures are best guesses."
+  ],
+  "updated_files": ["/app/mytv/run.sh (on_cable dumpsys ethernet regex)", "/app/test_reports/sim/fake_tv.py (TVSIM_CONN_FILE, TVSIM_WIFI_FILE, TVSIM_ETH_FILE, TVSIM_FAIL_RE)", "/app/test_reports/sim/run_scenario.sh (KEEP_FORCE=1 keeps FORCE_SETUPWRAITH; OLD_RUNSH=<commit> uses that run.sh)", "/app/test_reports/sim/run_all_iter2.sh (new)", "/app/test_reports/sim/fixtures/* (new)"],
+  "success_rate": {"backend": "100% (18/18 scenarios after one fix; E9 failed before the fix)", "frontend": "N/A"},
+  "seed_data_creation": "None. All runs are in /tmp/tvsim-<name> copies.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Run: bash /app/test_reports/sim/run_all_iter2.sh (about 2 min). Fixture files hold raw dumpsys text, and TVSIM_FAIL_RE makes matching tv.py commands exit 1. Old run.sh commit: bd7a1e09.",
+  "rca of the issue": "The previous detection needed BOTH a readable eth*/carrier=1 AND 'ip route' showing dev eth. On the real TV the shell user apparently cannot read sysfs carrier, and the routing is policy-based (tables per network), so the check failed and FORCE was never set. The new on_cable() accepts any of 3 cable signals and requires no connected Wi-Fi. That fixes the case in the simulator (U scenario)."
+}

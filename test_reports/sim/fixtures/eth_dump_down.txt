@@ -1,0 +1,3 @@
+Current Ethernet state: 
+Tracking interfaces:
+  eth0:NetworkInterfaceState{ refCount: 1, iface: eth0, up: false, hwAddress: aa:bb, networkCapabilities: [ Transports: ETHERNET], linkProperties: {InterfaceName: eth0 LinkAddresses: [ ]  DnsAddresses: [ ] Domains: null MTU: 0 Routes: [ ] Group: x}}
