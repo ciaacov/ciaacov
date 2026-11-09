@@ -112,6 +112,8 @@ def run(s, c):
     if c.startswith("cmd package query-activities --brief -a android.intent.action.MAIN -c android.intent.category.HOME"):
         return "".join(f"{a}\n" for p, a in HOME_ACT.items() if enabled(s, p))
     if c.startswith("cat /sys/class/net/eth"):
+        if os.environ.get("TVSIM_NO_SYSFS"):
+            return ""
         return "1\n" if os.environ.get("TVSIM_TRANSPORT", "ETHERNET") == "ETHERNET" else "0\n"
     if c.startswith("ip route get 1.1.1.1"):
         dev = "eth0" if os.environ.get("TVSIM_TRANSPORT", "ETHERNET") == "ETHERNET" else "wlan0"

@@ -30,11 +30,21 @@ pause "$SHOTS/1-before.png"
 
 step "4/6 Limpeza (so desativa, nada e apagado)"
 SETUP=com.google.android.tungsten.setupwraith
-# Only on a live network cable can turning off the setup wizard not take the TV offline (FORCE_SETUPWRAITH):
-# eth0 must have carrier AND the TV's internet route must go out through it.
-ETH_CARRIER=$(tv 'cat /sys/class/net/eth*/carrier 2>/dev/null' | tr -dc '0-9' || true)
-ETH_ROUTE=$(tv 'ip route get 1.1.1.1 2>/dev/null; ip -4 route show table all 2>/dev/null | grep "^default"' | grep -c 'dev eth' || true)
-if [ "${ETH_CARRIER#*1}" != "$ETH_CARRIER" ] && [ "${ETH_ROUTE:-0}" -gt 0 ]; then
+# Turning off the setup wizard can only drop a Wi-Fi network, so allow it (FORCE_SETUPWRAITH) when the TV's
+# connection is a cable: some sign of a live Ethernet link, and no connected Wi-Fi network at all.
+on_cable() {
+  local conn wifi eth=0 wlan=0
+  conn=$(tv 'dumpsys connectivity' | tr -d '\r' | grep 'NetworkAgentInfo' | grep 'CONNECTED/CONNECTED' || true)
+  printf '%s\n' "$conn" | grep 'Transports: ETHERNET' >/dev/null && eth=1
+  printf '%s\n' "$conn" | grep 'Transports: WIFI' >/dev/null && wlan=1
+  tv 'dumpsys ethernet' 2>/dev/null | tr -d '\r' | grep -Ei 'state: *CONNECTED|link.*up|isConnected.*true' >/dev/null && eth=1
+  tv 'cat /sys/class/net/eth*/carrier 2>/dev/null' 2>/dev/null | grep -x '1' >/dev/null && eth=1
+  wifi=$(tv 'dumpsys wifi' 2>/dev/null | tr -d '\r' || true)
+  printf '%s\n' "$wifi" | grep -Ei 'mNetworkInfo.*state: CONNECTED|Wi-Fi is connected' >/dev/null && wlan=1
+  echo "Conexao da TV: cabo=$eth wifi_conectado=$wlan"
+  [ "$eth" = 1 ] && [ "$wlan" = 0 ]
+}
+if [ -z "${FORCE_SETUPWRAITH:-}" ] && on_cable; then
   echo "TV no cabo de rede: o assistente de configuracao ($SETUP) pode ser desligado com seguranca."
   export FORCE_SETUPWRAITH=1
 fi
@@ -48,6 +58,7 @@ if printf '%s\n' "$ALL" | grep -x "package:$SETUP" >/dev/null && ! printf '%s\n'
   echo "e com ele ligado a nova tela inicial nao consegue ficar como Home. Nada foi estragado." >&2
   echo "Para resolver: ligue o CABO DE REDE na TV (e confira em Configuracoes > Rede que ela esta usando o cabo)," >&2
   echo "depois rode este mesmo comando outra vez." >&2
+  echo "Se a TV JA esta no cabo e o Wi-Fi desligado, rode assim:  FORCE_SETUPWRAITH=1 bash mytv/run.sh" >&2
   exit 1
 fi
 tv --screenshot "$SHOTS/2-after-debloat.png" --wait 1
