@@ -1,5 +1,7 @@
 # My TV: Xiaomi MiTV-MOOR2 (Google TV / Android 11) at 192.168.1.51
 
+**Guia em português, passo a passo: [GUIA.md](GUIA.md)**
+
 Everything is ready. You only need to run it from a computer on the same home network as the TV.
 
 ## What's in this folder
@@ -29,7 +31,7 @@ You need Python 3. Nothing else: no Android Studio, no Java.
 
 ```bash
 cd cleanyourtv          # this repo, downloaded to your computer
-mytv/run.sh
+bash mytv/run.sh
 ```
 
 - At step 2 the TV shows **"Allow USB debugging?"**: tick *Always allow* and press **OK**.
@@ -37,7 +39,7 @@ mytv/run.sh
 - The backup goes to `mytv/backup-<date>/`: full package list, disabled list, getprop, all settings.
 - At the end it lists the file managers it found. If yours isn't in the dock, tell me its name and I'll add it.
 
-If the TV has another IP by then: `TV_HOST=192.168.1.xx mytv/run.sh`
+If the TV has another IP by then: `TV_HOST=192.168.1.xx bash mytv/run.sh`
 
 ## After it's done
 
@@ -50,20 +52,20 @@ If the TV has another IP by then: `TV_HOST=192.168.1.xx mytv/run.sh`
 
 | Command | What it does |
 |---|---|
-| `mytv/theme.sh` | Puts the **Aurora** theme on: northern-lights wallpaper, deep navy background. Your dock stays the same. |
-| `mytv/theme.sh cinematic` | Any other theme from `themes/` (aerial, glass, minimal, scenes, stockholm...), whenever you like. |
-| `mytv/theme.sh --reset` | Back to the plain black look. |
-| `mytv/round2.sh` | Second cleanup: turns off Google TV/Play Movies, printing, feedback reporter, calendar sync, the Xiaomi gallery/video player/media explorer, and the CI+ card module (`debloat-round2.txt`). YouTube Music and updates stay on. |
+| `bash mytv/theme.sh` | Puts the **Aurora** theme on: northern-lights wallpaper, deep navy background. Your dock stays the same. |
+| `bash mytv/theme.sh cinematic` | Any other theme from `themes/` (aerial, glass, minimal, scenes, stockholm...), whenever you like. |
+| `bash mytv/theme.sh --reset` | Back to the plain black look. |
+| `bash mytv/round2.sh` | Second cleanup: turns off Google TV/Play Movies, printing, feedback reporter, calendar sync, the Xiaomi gallery/video player/media explorer, and the CI+ card module (`debloat-round2.txt`). YouTube Music and updates stay on. |
 
-Each one saves a screenshot in `mytv/shots/`. `mytv/restore.sh` undoes all of it, round 2 and the theme included.
+Each one saves a screenshot in `mytv/shots/`. `bash mytv/restore.sh` undoes all of it, round 2 and the theme included.
 
 ## Undo everything
 
 ```bash
-mytv/restore.sh
+bash mytv/restore.sh
 ```
 
 ## Rebuilding the launcher yourself (only if you change the dock)
 
 Edit `launcher/app/src/main/res/values/config.xml` (`dock_apps`, `columns`), delete `mytv/tvhome-release.apk`,
-and run `mytv/run.sh` again. It then builds with JDK 17 and Android SDK 34, or use `tools/docker-build.sh`.
+and run `bash mytv/run.sh` again. It then builds with JDK 17 and Android SDK 34, or use `tools/docker-build.sh`.

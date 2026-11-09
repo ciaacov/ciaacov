@@ -21,3 +21,4 @@ and deliver restore and build scripts plus a README. Never uninstall system pack
 - P0: User runs mytv/run.sh and sends the screenshots back for review
 - P1: Confirm the file manager package name and add it to dock_apps if it's missing
 - P2: Optional themes (tools/theme.sh), second debloat round
+- Added (PT-BR request): mytv/GUIA.md beginner guide (Windows Git Bash / Mac / Linux, getting the folder via Save to GitHub > Download ZIP, run order, sending back mytv/shots). Shared mytv/_env.sh picks py/python3/python and venv bin or Scripts (Windows). Scripts invoked with `bash` so missing exec bits from ZIP don't matter; prompts translated to Portuguese. Verified: fresh venv creation + run from another folder reaches the TV probe.
