@@ -26,10 +26,7 @@
         <item>com.amazon.amazonvideo.livingroom</item>
         <item>com.wbd.hbomax</item>
         <item>com.hbo.hbonow</item>
-        <item>com.lonelycatgames.Xplore</item>
         <item>com.alphainventor.filemanager</item>
-        <item>com.estrongs.android.pop</item>
-        <item>com.google.android.apps.nbu.files</item>
     </string-array>
     <!-- With fewer dock_apps than columns (or a dock app that is not installed), the free dock slots take
          the first grid apps, so the dock never shows a gap. false leaves them empty (#162); a theme can

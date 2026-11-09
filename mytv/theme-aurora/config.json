@@ -1,0 +1,16 @@
+{
+  "background_color": "#070A14",
+  "wallpaper": true,
+  "dock_apps": [
+    "com.google.android.youtube.tv",
+    "com.teamsmart.videomanager.tv",
+    "com.liskovsoft.smarttubetv",
+    "com.liskovsoft.smarttubetv.beta",
+    "com.disney.disneyplus",
+    "com.netflix.ninja",
+    "com.amazon.amazonvideo.livingroom",
+    "com.wbd.hbomax",
+    "com.hbo.hbonow",
+    "com.alphainventor.filemanager"
+  ]
+}
