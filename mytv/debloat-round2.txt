@@ -1,0 +1,20 @@
+# Second cleanup round for my MiTV-MOOR2, from the "optional second round" in
+# examples/xiaomi-mitv-moor2/debloat.txt (four days on a MOOR2, nothing re-enabled).
+# Apply: mytv/round2.sh     Undo: mytv/restore.sh (undoes both rounds)
+# Kept: YouTube Music, firmware updaters, voice search, casting, streaming apps.
+
+# Google TV / Play Movies store app
+com.google.android.videos
+
+# Printing, feedback reporter, calendar sync
+com.android.printspooler
+com.google.android.feedback
+com.google.android.syncadapters.calendar
+
+# Xiaomi media apps; your file manager opens USB photos and videos instead
+com.mitv.videoplayer
+com.mitv.gallery
+com.xiaomi.mitv.mediaexplorer
+
+# CI+ card module for broadcast TV (no CI card in use)
+com.mitv.livetv.ci_mediatek

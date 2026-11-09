@@ -24,3 +24,4 @@ launcher/replay_pid*.log
 !mytv/tvhome-release.apk
 mytv/backup-*/
 mytv/shots/
+mytv/.round2-applied

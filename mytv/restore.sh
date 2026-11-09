@@ -7,6 +7,10 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 export TV_HOST="${TV_HOST:-192.168.1.51}"
 [ -x tools/venv/bin/python ] || { python3 -m venv tools/venv && tools/venv/bin/pip install -q -r tools/requirements.txt; }
+if [ -f mytv/.round2-applied ]; then
+  tools/restore.sh mytv/debloat-round2.txt com.google.android.apps.tv.launcherx && rm -f mytv/.round2-applied
+fi
+tools/theme.sh --reset || true
 tools/restore.sh mytv/debloat.txt com.google.android.apps.tv.launcherx
 if [ "${KEEP_LAUNCHER:-0}" != 1 ]; then
   tools/venv/bin/python -I tools/tv.py 'pm uninstall com.gathin.tvhome' || true

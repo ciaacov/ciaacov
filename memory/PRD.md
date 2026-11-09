@@ -17,6 +17,7 @@ and deliver restore and build scripts plus a README. Never uninstall system pack
 - Repo tests for the shipped config pass; the scripts pass a bash syntax check. Nothing has run on the real TV yet.
 
 ## Backlog
+- Added: mytv/theme.sh (Aurora by default, any themes/<name>, --reset), mytv/round2.sh + debloat-round2.txt (8 pkgs: videos, printspooler, feedback, calendar sync, videoplayer, gallery, mediaexplorer, ci_mediatek; YouTube Music kept). restore.sh now also undoes round 2 and the theme. Both lists parse with recovery.py.
 - P0: User runs mytv/run.sh and sends the screenshots back for review
 - P1: Confirm the file manager package name and add it to dock_apps if it's missing
 - P2: Optional themes (tools/theme.sh), second debloat round

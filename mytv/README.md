@@ -46,6 +46,17 @@ If the TV has another IP by then: `TV_HOST=192.168.1.xx mytv/run.sh`
   CleanYourTV Home button → **On**. Switching it **Off** is also how you get the original Google TV home back for a moment.
 - Switch **USB debugging OFF** in Developer options when you're finished.
 
+## Optional extras (run after `run.sh`)
+
+| Command | What it does |
+|---|---|
+| `mytv/theme.sh` | Puts the **Aurora** theme on: northern-lights wallpaper, deep navy background. Your dock stays the same. |
+| `mytv/theme.sh cinematic` | Any other theme from `themes/` (aerial, glass, minimal, scenes, stockholm...), whenever you like. |
+| `mytv/theme.sh --reset` | Back to the plain black look. |
+| `mytv/round2.sh` | Second cleanup: turns off Google TV/Play Movies, printing, feedback reporter, calendar sync, the Xiaomi gallery/video player/media explorer, and the CI+ card module (`debloat-round2.txt`). YouTube Music and updates stay on. |
+
+Each one saves a screenshot in `mytv/shots/`. `mytv/restore.sh` undoes all of it, round 2 and the theme included.
+
 ## Undo everything
 
 ```bash
