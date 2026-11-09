@@ -25,3 +25,10 @@ launcher/replay_pid*.log
 mytv/backup-*/
 mytv/shots/
 mytv/.round2-applied
+.env
+.env.*
+*.env
+credentials.json
+*.pem
+*.key
+.credentials
