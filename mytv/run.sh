@@ -29,7 +29,21 @@ tv --screenshot "$SHOTS/1-before.png" --wait 1
 pause "$SHOTS/1-before.png"
 
 step "4/6 Limpeza (so desativa, nada e apagado)"
+SETUP=com.google.android.tungsten.setupwraith
+# The TV is on a network cable, so turning off the setup wizard cannot take it offline (FORCE_SETUPWRAITH).
+if tv 'dumpsys connectivity' | grep -o 'Transports: [A-Z]*' | grep ETHERNET >/dev/null; then
+  echo "TV no cabo de rede: o assistente de configuracao ($SETUP) pode ser desligado com seguranca."
+  export FORCE_SETUPWRAITH=1
+fi
 bash tools/disable.sh mytv/debloat.txt
+if tv "pm list packages -e $SETUP" | tr -d '\r' | grep -x "package:$SETUP" >/dev/null; then
+  echo >&2
+  echo "PAREI AQUI: o assistente de configuracao do Google ($SETUP) continua ligado," >&2
+  echo "e com ele ligado a nova tela inicial nao consegue ficar como Home." >&2
+  echo "A TV nao esta usando o cabo de rede agora. Na TV: Configuracoes > Rede e Internet > sua rede Wi-Fi >" >&2
+  echo "Esquecer rede, depois conecte nela de novo. Entao rode este mesmo comando outra vez." >&2
+  exit 1
+fi
 tv --screenshot "$SHOTS/2-after-debloat.png" --wait 1
 pause "$SHOTS/2-after-debloat.png"
 

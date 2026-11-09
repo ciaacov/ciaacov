@@ -103,6 +103,7 @@ Com isso eu confiro se tudo ficou certo e coloco o seu gerenciador de arquivos n
 | `could not reach 192.168.1.151` | A TV está desligada, ou o computador não está na mesma internet de casa. Confira e rode de novo. Se o IP da TV mudou (Configurações → Rede), coloque o IP no final do comando: `bash mytv/run.sh 192.168.1.XXX` (vale para todos: `theme.sh`, `round2.sh`, `restore.sh`) |
 | `python: command not found` | (Windows) Reinstale o Python marcando **"Add python.exe to PATH"** e abra o Git Bash de novo. |
 | O aviso na TV não apareceu | Desligue e ligue de novo a **Depuração USB** na TV e rode o comando outra vez. |
+| `Home resolves to ...setupwraith/.RecoveryActivity` ou `PAREI AQUI` | Já corrigido: baixe o ZIP novo e rode o mesmo comando de novo. Se aparecer `PAREI AQUI`, faça o que a mensagem diz (esquecer o Wi-Fi e conectar de novo) e rode outra vez. |
 | O botão Home abre a tela antiga do Google TV | Na TV: Configurações → Sistema → Acessibilidade → **CleanYourTV Home button → Ativar**. |
 | Qualquer outra coisa | Tire uma foto da janela preta (ou copie o texto) e me mande aqui. |
 
