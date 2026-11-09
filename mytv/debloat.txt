@@ -1,0 +1,36 @@
+# My Xiaomi MiTV-MOOR2 (Google TV / Android 11), based on examples/xiaomi-mitv-moor2/debloat.txt.
+# Kept on purpose (owner's choice): streaming apps, voice search (katniss / assistant), Chromecast and
+# casting (smartshare, wfdsinkhelperservice), system updates (updateservice, upgrader, ABUpdateStatus).
+# Everything here is DISABLED, not uninstalled. Undo: mytv/restore.sh
+#
+# DO NOT DISABLE on this model: com.mitv.livetv (HDMI/input switcher), mitv.service, com.mediatek.network,
+# com.mitv.overseaservice (Netflix key), com.mediatek.tvinput, com.mediatek.tv.service, com.mi.bluetooth,
+# com.google.android.tv.remote.service
+
+# Telemetry and analytics
+com.miui.tv.analytics
+com.xiaomi.statistic
+com.xiaomi.tvqs.overseas
+com.google.android.partnersetup
+
+# Ads and promo content rows
+com.mitv.tvhome.oemtab
+com.mitv.tvhome.michannel
+com.mitv.tvhome.mitvplus
+com.mitv.tvhome.atv
+com.xm.webcontent
+
+# Preloaded junk
+fusion.android.tv.demo
+com.xiaomi.mitv.tvmanager
+com.mitv.toolhouse
+com.xiaomi.mitv.manualhelp
+com.xiaomo.tv.milegal
+android.autoinstalls.config.xiaomi.amelie
+com.mitv.milinkservice
+com.xiaomi.mimusic2
+com.google.android.play.games
+
+# Setup wizard: claims Home and blocks the new launcher. disable.sh skips it by itself if it owns
+# a saved Wi-Fi network (this TV is on Ethernet, so that is unlikely to matter).
+com.google.android.tungsten.setupwraith
