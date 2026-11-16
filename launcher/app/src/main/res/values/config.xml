@@ -18,6 +18,7 @@
     <!-- Apps pinned to the dock row at the bottom, in this order. Missing apps are skipped. -->
     <string-array name="dock_apps">
         <item>com.google.android.youtube.tv</item>
+        <item>org.smarttube.stable</item>
         <item>com.teamsmart.videomanager.tv</item>
         <item>com.liskovsoft.smarttubetv</item>
         <item>com.liskovsoft.smarttubetv.beta</item>

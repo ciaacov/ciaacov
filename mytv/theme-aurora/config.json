@@ -2,8 +2,10 @@
   "background_color": "#070A14",
   "wallpaper": true,
   "show_network_pill": false,
+  "fill_dock": false,
   "dock_apps": [
     "com.google.android.youtube.tv",
+    "org.smarttube.stable",
     "com.teamsmart.videomanager.tv",
     "com.liskovsoft.smarttubetv",
     "com.liskovsoft.smarttubetv.beta",
