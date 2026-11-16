@@ -52,7 +52,7 @@ If the TV has another IP by then: `TV_HOST=192.168.1.xx bash mytv/run.sh`
 
 | Command | What it does |
 |---|---|
-| `bash mytv/theme.sh` | Puts the **Aurora** theme on (northern-lights wallpaper, deep navy) with your 7-app dock: YouTube, SmartTube, Disney+, Netflix, Prime Video, HBO Max, and the file manager `com.alphainventor.filemanager` in slot 7. |
+| `bash mytv/theme.sh` | Puts the **Aurora** theme on (northern-lights wallpaper, deep navy) with the network icon hidden from the top bar (Settings > Network still works) and your 7-app dock: YouTube, SmartTube, Disney+, Netflix, Prime Video, HBO Max, and the file manager `com.alphainventor.filemanager` in slot 7. |
 | `bash mytv/theme.sh cinematic` | Any other theme from `themes/` (aerial, glass, minimal, scenes, stockholm...), whenever you like. |
 | `bash mytv/theme.sh --reset` | Back to the plain black look. |
 | `bash mytv/round2.sh` | Second cleanup: turns off Google TV/Play Movies, printing, feedback reporter, calendar sync, the Xiaomi gallery/video player/media explorer, and the CI+ card module (`debloat-round2.txt`). YouTube Music and updates stay on. |
