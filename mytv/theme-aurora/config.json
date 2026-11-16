@@ -6,14 +6,18 @@
   "dock_apps": [
     "com.google.android.youtube.tv",
     "org.smarttube.stable",
-    "com.teamsmart.videomanager.tv",
-    "com.liskovsoft.smarttubetv",
-    "com.liskovsoft.smarttubetv.beta",
     "com.disney.disneyplus",
     "com.netflix.ninja",
     "com.amazon.amazonvideo.livingroom",
     "com.wbd.hbomax",
     "com.hbo.hbonow",
     "com.alphainventor.filemanager"
+  ],
+  "hidden_apps": [
+    "com.mediatek.wwtv.tvcenter",
+    "com.mitv.livetv",
+    "com.mitv.gallery",
+    "com.android.tv.settings",
+    "com.android.settings"
   ]
 }
